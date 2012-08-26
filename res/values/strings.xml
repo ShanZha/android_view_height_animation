@@ -1,0 +1,8 @@
+<resources>
+
+    <string name="app_name">Test Height Animation</string>
+    <string name="title_activity_main">Test Height Animation</string>
+    <string name="add_views">Add Views</string>
+    <string name="remove_views">Remove Views</string>
+
+</resources>
