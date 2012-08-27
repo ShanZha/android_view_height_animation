@@ -177,8 +177,8 @@ public class MainActivity extends Activity {
             m.setAccessible(true);
             m.invoke(
                 v,
-                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
-                MeasureSpec.makeMeasureSpec(((View)v.getParent()).getMeasuredWidth(), MeasureSpec.AT_MOST)
+                MeasureSpec.makeMeasureSpec(((View)v.getParent()).getMeasuredWidth(), MeasureSpec.AT_MOST),
+                MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
             );
         } catch (Exception e){
             Log.e(TAG, "failed to measure view", e);
