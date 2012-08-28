@@ -6,6 +6,8 @@ import java.util.List;
 
 import vit.android.test.height.animation.ChangeYSizeAnimation.HeightSpec;
 import vit.android.test.height.animation.ChangeYSizeAnimation.MarginSpec;
+import vit.android.test.height.animation.ChangeYSizeAnimation.MatchParentHeightSpec;
+import vit.android.test.height.animation.ChangeYSizeAnimation.WrapContentHeightSpec;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
@@ -127,9 +129,11 @@ public class MainActivity extends Activity {
         for (View v : views) {
             container.addView(v); // view height is still 0 at this point
             
-            int targetHeight = getTargetHeight(v); // this is a trick to get future height
-            
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            
+            int initialHeight = layoutParams.height;
+            
+            int targetHeight = getTargetHeight(v); // this is a trick to get future height
             
             layoutParams.height = 0;
             
@@ -140,13 +144,23 @@ public class MainActivity extends Activity {
             layoutParams.bottomMargin = 0;
             
             MarginSpec marginSpec = new MarginSpec(targetTopMargin, targetBottomMargin);
-            HeightSpec heightSpec = new HeightSpec(targetHeight);
+            HeightSpec heightSpec = getHeightSpec(initialHeight, targetHeight);
             
             ChangeYSizeAnimation animation = new ChangeYSizeAnimation(v, heightSpec, marginSpec);
             animation.setInterpolator(interpolator);
             animation.setDuration(500);
             
             v.startAnimation(animation);
+        }
+    }
+    
+    private HeightSpec getHeightSpec(int initialHeight, int targetHeight) {
+        if (initialHeight == ViewGroup.LayoutParams.MATCH_PARENT) {
+            return new MatchParentHeightSpec(targetHeight);
+        } else if (initialHeight == ViewGroup.LayoutParams.WRAP_CONTENT) {
+            return new WrapContentHeightSpec(targetHeight);
+        } else {
+            return new HeightSpec(targetHeight);
         }
     }
     

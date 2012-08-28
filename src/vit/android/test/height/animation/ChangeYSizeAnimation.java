@@ -30,6 +30,26 @@ public class ChangeYSizeAnimation extends Animation {
     }
     
     /**
+     * This extends HeightSpec and tells the ChangeYSizeAnimation that on the very end
+     * it should apply ViewGroup.LayoutParams.MATCH_PARENT as target height.
+     */
+    public static class MatchParentHeightSpec extends HeightSpec {
+        public MatchParentHeightSpec(int target) {
+            super(target);
+        }
+    }
+
+    /**
+     * This extends HeightSpec and tells the ChangeYSizeAnimation that on the very end
+     * it should apply ViewGroup.LayoutParams.WRAP_CONTENT as target height.
+     */
+    public static class WrapContentHeightSpec extends HeightSpec {
+        public WrapContentHeightSpec(int target) {
+            super(target);
+        }
+    }
+    
+    /**
      * Describes target top/bottom margins in pixels for the view.
      */
     public static class MarginSpec {
@@ -134,30 +154,17 @@ public class ChangeYSizeAnimation extends Animation {
     protected void applyTransformation(float interpolatedTime, Transformation t) {
         if (!process) return;
         
-        ViewGroup.MarginLayoutParams lp = layoutParams;
-        
         // let's handle corner cases separately to avoid casting/rounding issues
         if (interpolatedTime == 0.0f) { /* start of the animation */
             // just do nothing in this case
         } else if (interpolatedTime == 1.0f) { /* end of the animation */
-            if (processHeight) {
-                lp.height = heightSpec.target;
-            }
-            if (processMargins) {
-                lp.topMargin    = marginSpec.targetTop;
-                lp.bottomMargin = marginSpec.targetBottom;
-            }
+            onFinish();
         } else {
-            if (processHeight) {
-                lp.height = initialHeight + (int) (deltaHeight * interpolatedTime);
-            }
-            if (processMargins) {
-                lp.topMargin    = initialMarginTop    + (int) (deltaMarginTop    * interpolatedTime);
-                lp.bottomMargin = initialMarginBottom + (int) (deltaMarginBottom * interpolatedTime);
-            }
+            onUpdate(interpolatedTime);
         }
         
         if (DEBUG) {
+            ViewGroup.MarginLayoutParams lp = layoutParams;
             log("applyTransformation: new height: " + lp.height + "; new margins: "
                     + lp.topMargin + ", " + lp.bottomMargin);
         }
@@ -168,6 +175,34 @@ public class ChangeYSizeAnimation extends Animation {
     @Override
     public boolean willChangeBounds() {
         return true;
+    }
+    
+    private void onUpdate(float interpolatedTime) {
+        ViewGroup.MarginLayoutParams lp = layoutParams;
+        if (processHeight) {
+            lp.height = initialHeight + (int) (deltaHeight * interpolatedTime);
+        }
+        if (processMargins) {
+            lp.topMargin    = initialMarginTop    + (int) (deltaMarginTop    * interpolatedTime);
+            lp.bottomMargin = initialMarginBottom + (int) (deltaMarginBottom * interpolatedTime);
+        }
+    }
+    
+    private void onFinish() {
+        ViewGroup.MarginLayoutParams lp = layoutParams;
+        if (processHeight) {
+            if (heightSpec instanceof MatchParentHeightSpec) {
+                lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            } else if (heightSpec instanceof WrapContentHeightSpec) {
+                lp.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+            } else {
+                lp.height = heightSpec.target;
+            }
+        }
+        if (processMargins) {
+            lp.topMargin    = marginSpec.targetTop;
+            lp.bottomMargin = marginSpec.targetBottom;
+        }
     }
     
     private static void log(String string) {
