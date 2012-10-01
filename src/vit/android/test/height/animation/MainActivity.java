@@ -22,6 +22,15 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+/**
+ * <p>
+ * Please note that this is a "prove-of-concept" code, so it should not be used
+ * in production. For instance, this Activity does not handle config/life-cycle
+ * changes.
+ * </p>
+ * 
+ * @author Vitaliy Khudenko, vitaliy.khudenko@gmail.com
+ */
 public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();

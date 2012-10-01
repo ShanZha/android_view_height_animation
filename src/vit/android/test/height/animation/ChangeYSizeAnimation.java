@@ -8,6 +8,14 @@ import android.view.animation.Transformation;
 
 /**
  * This class allows to change vertical size (height + margins) of the view.
+ * 
+ * <p>
+ * Please note that this is a "prove-of-concept" code, so it should not be used
+ * in production. For instance, this class was not implemented to support
+ * horizontally oriented <code>ViewGroup</code>s.
+ * </p>
+ * 
+ * @author Vitaliy Khudenko, vitaliy.khudenko@gmail.com
  */
 public class ChangeYSizeAnimation extends Animation {
 
